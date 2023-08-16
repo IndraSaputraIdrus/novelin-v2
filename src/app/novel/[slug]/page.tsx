@@ -1,6 +1,6 @@
+import Container from "@/components/Container";
 import { database } from "@/libs/firebase";
-import clsx from "clsx";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import Link from "next/link";
 
 interface PageProps {
@@ -12,7 +12,8 @@ interface PageProps {
 async function getAllChapter(slug: string) {
   try {
     const chapterRef = collection(database, "novel", slug, "chapter");
-    const dataChapter = await getDocs(chapterRef);
+    const queryChapter = query(chapterRef, orderBy("chapter"), limit(10));
+    const dataChapter = await getDocs(queryChapter);
     const chapters = dataChapter.docs.map((doc) => ({ chapter: doc.id }));
 
     return chapters.sort((a, b) => parseInt(a.chapter) - parseInt(b.chapter));
@@ -26,8 +27,8 @@ export default async function NovelPage({ params }: PageProps) {
   const chapters = await getAllChapter(params.slug);
 
   return (
-    <div className={clsx("my-20")}>
-      <div className={clsx("max-w-2xl", "mx-auto", "px-5 md:px-3")}>
+    <main>
+      <Container className="my-20">
         <h1 className="capitalize text-3xl font-semibold">{title}</h1>
         <ul className="mt-5">
           {chapters?.map(({ chapter }) => (
@@ -41,7 +42,7 @@ export default async function NovelPage({ params }: PageProps) {
             </li>
           ))}
         </ul>
-      </div>
-    </div>
+      </Container>
+    </main>
   );
 }

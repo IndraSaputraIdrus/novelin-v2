@@ -1,7 +1,14 @@
+import Container from "@/components/Container";
+import ListNovel from "@/components/ListNovel";
+
 export default function Home() {
   return (
-    <main className="min-h-screen text-center">
-      <h1>Hello world</h1>
+    <main>
+      <Container className="mt-10">
+        <div>
+          <ListNovel />
+        </div>
+      </Container>
     </main>
   );
 }
