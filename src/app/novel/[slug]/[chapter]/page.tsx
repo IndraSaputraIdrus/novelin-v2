@@ -11,8 +11,8 @@ interface PageProps {
   };
 }
 
-async function getData(chapter: string) {
-  const docRef = doc(database, "novel", "the-novel-extra", "chapter", chapter);
+async function getData(chapter: string, slug: string) {
+  const docRef = doc(database, "novel", slug, "chapter", chapter);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     const data = docSnap.data();
@@ -21,9 +21,9 @@ async function getData(chapter: string) {
 }
 
 export default async function NovelChapter({ params }: PageProps) {
-  const data = await getData(params.chapter);
-  const chapterNumber = Number(params.chapter);
   const slug = params.slug;
+  const data = await getData(params.chapter, slug);
+  const chapterNumber = Number(params.chapter);
 
   return (
     <main>
@@ -32,7 +32,6 @@ export default async function NovelChapter({ params }: PageProps) {
           className={clsx(
             "max-w-2xl",
             "mx-auto mb-10",
-            "md:px-3",
             "flex justify-end items-center space-x-3"
           )}
         >
@@ -41,7 +40,7 @@ export default async function NovelChapter({ params }: PageProps) {
               "block",
               "w-max",
               "px-3 py-1",
-              "bg-white text-slate-950"
+              "bg-gray-100 text-slate-950"
             )}
             href={`/novel/${slug}/${chapterNumber - 1}`}
           >
@@ -52,7 +51,7 @@ export default async function NovelChapter({ params }: PageProps) {
               "block",
               "w-max",
               "px-3 py-1",
-              "bg-white text-slate-950"
+              "bg-gray-100 text-slate-950"
             )}
             href={`/novel/${slug}/${chapterNumber + 1}`}
           >

@@ -4,7 +4,7 @@ import { collection, getDocs } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
 
-const getListNovel = async () => {
+export const getListNovel = async () => {
   try {
     const novelRef = collection(database, "novel");
 
