@@ -1,24 +1,8 @@
-import { database } from "@/libs/firebase";
+import { getListNovel } from "@/libs/fetch";
 import clsx from "clsx";
-import { collection, getDocs } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
-
-export const getListNovel = async () => {
-  try {
-    const novelRef = collection(database, "novel");
-
-    const novelSnap = await getDocs(novelRef);
-    const novels = novelSnap.docs.map((doc) => ({
-      id: doc.id,
-      data: doc.data(),
-    }));
-
-    return novels;
-  } catch (error) {
-    console.log(error);
-  }
-};
+import { notFound } from "next/navigation";
 
 const formatIdToTitle = async (id: string) => {
   return id.split("-").join(" ");
@@ -26,9 +10,7 @@ const formatIdToTitle = async (id: string) => {
 
 export default async function ListNovel() {
   const data = await getListNovel();
-
-  if (!data) return <h1>error</h1>;
-
+  if (!data) return notFound();
   return (
     <div>
       <h1 className="text-5xl font-semibold mb-5">List Novel</h1>

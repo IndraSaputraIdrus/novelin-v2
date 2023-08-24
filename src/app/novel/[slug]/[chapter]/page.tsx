@@ -1,8 +1,8 @@
-import { database } from "@/libs/firebase";
-import { doc, getDoc } from "firebase/firestore";
 import clsx from "clsx";
 import Link from "next/link";
 import Container from "@/components/Container";
+import { getAllChapter, getData, getListNovel } from "@/libs/fetch";
+import { notFound } from "next/navigation";
 
 interface PageProps {
   params: {
@@ -11,19 +11,27 @@ interface PageProps {
   };
 }
 
-async function getData(chapter: string, slug: string) {
-  const docRef = doc(database, "novel", slug, "chapter", chapter);
-  const docSnap = await getDoc(docRef);
-  if (docSnap.exists()) {
-    const data = docSnap.data();
-    return data;
+export async function generateStaticParams() {
+  const novel = await getListNovel();
+  if(!novel) return notFound()
+  let newData: { slug: string; chapter: string }[] = [];
+  for (const title of novel) {
+    const chapters = await getAllChapter(title.id);
+    if (!chapters) throw new Error("Error chapter");
+    chapters.forEach((chapter) => {
+      newData.push({ slug: title.id, chapter: chapter.chapter });
+    });
   }
+
+  return newData;
 }
 
 export default async function NovelChapter({ params }: PageProps) {
   const slug = params.slug;
   const data = await getData(params.chapter, slug);
   const chapterNumber = Number(params.chapter);
+
+  if(!data) return notFound()
 
   return (
     <main>
@@ -61,7 +69,7 @@ export default async function NovelChapter({ params }: PageProps) {
 
         <div
           className="mx-auto prose prose-invert"
-          dangerouslySetInnerHTML={{ __html: data?.text }}
+          dangerouslySetInnerHTML={{ __html: data.text }}
         ></div>
       </Container>
     </main>

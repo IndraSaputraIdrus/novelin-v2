@@ -1,9 +1,8 @@
 import Container from "@/components/Container";
-import { getListNovel } from "@/components/ListNovel";
-import { database } from "@/libs/firebase";
+import { getAllChapter, getListNovel } from "@/libs/fetch";
 import clsx from "clsx";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 interface PageProps {
   params: {
@@ -11,30 +10,18 @@ interface PageProps {
   };
 }
 
+export const revalidate = 300
+
 export async function generateStaticParams() {
   const novel = await getListNovel();
-
-  if (!novel) throw new Error("Error slug");
-
+  if (!novel) throw new Error("Data not exist")
   return novel.map((item) => ({ slug: item.id }));
-}
-
-async function getAllChapter(slug: string) {
-  try {
-    const chapterRef = collection(database, "novel", slug, "chapter");
-    const queryChapter = query(chapterRef, orderBy("chapter", "desc"));
-    const dataChapter = await getDocs(queryChapter);
-    const chapters = dataChapter.docs.map((doc) => ({ chapter: doc.id }));
-
-    return chapters;
-  } catch (error) {
-    console.log(error);
-  }
 }
 
 export default async function NovelPage({ params }: PageProps) {
   const title = params.slug.replace(/-/g, " ");
   const chapters = await getAllChapter(params.slug);
+  if (!chapters) return notFound();
 
   return (
     <main>
@@ -42,7 +29,7 @@ export default async function NovelPage({ params }: PageProps) {
         <h1 className="capitalize text-3xl font-semibold">{title}</h1>
         <div>
           <ul className="mt-5 h-80 overflow-y-auto space-y-1.5">
-            {chapters?.map(({ chapter }) => (
+            {chapters.map(({ chapter }) => (
               <li key={Number(chapter)}>
                 <Link
                   className={clsx(
