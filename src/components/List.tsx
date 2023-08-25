@@ -1,28 +1,29 @@
-import { getListNovel } from "@/libs/fetch";
+import { generateSlug } from "@/libs/generateSlug";
+import { getAllNovel } from "@/services/novel";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import defaultImg from "@/libs/defaultImg";
+import { Data } from "../../typing";
 
-const formatIdToTitle = async (id: string) => {
-  return id.split("-").join(" ");
+type ListProps = {
+  title: string;
+  data: Data[];
 };
 
-export default async function ListNovel() {
-  const data = await getListNovel();
-  if (!data) return notFound();
+export default async function List({ title, data }: ListProps) {
   return (
     <div>
-      <h1 className="text-5xl font-semibold mb-5">List Novel</h1>
+      <h1 className="text-5xl font-semibold mb-5">{title}</h1>
       <ul className="grid grid-cols-2 sm:grid-cols-4 gap-5">
         {data.map((item) => (
           <li key={item.id}>
-            <Link href={`/novel/${item.id}`}>
+            <Link href={`/novel/${item.slug}`}>
               <article className="w-full h-72 sm:h-52 relative rounded-md overflow-hidden cursor-pointer">
                 <Image
-                  src={item.data.image}
+                  src={item.cover_img || defaultImg}
                   loading="lazy"
-                  alt={item.id}
+                  alt={item.title}
                   fill={true}
                   className="object-cover transition hover:scale-110"
                 />
@@ -33,9 +34,7 @@ export default async function ListNovel() {
                     "py-3 px-2 text-center flex items-center justify-center"
                   )}
                 >
-                  <h2 className="capitalize truncate">
-                    {formatIdToTitle(item.id)}
-                  </h2>
+                  <h2 className="capitalize truncate">{item.title}</h2>
                 </div>
               </article>
             </Link>
