@@ -5,6 +5,7 @@ import {
   findIdNovelBySlug,
   findManyNovel,
   findNovel,
+  paginationChapter,
 } from "@/data/novel";
 import { NovelChapter, Novel } from "../../typing";
 
@@ -41,12 +42,24 @@ export const getNovelBySlug = async (slug: string) => {
 
 export const getContentNovelByChapter = async (
   slug: string,
-  chapterId: number
+  chapterNumber: string
 ) => {
   const novel = await findIdNovelBySlug(slug);
   if (!novel) throw new Error("Data not exist");
-  const result = await findContentNovel(novel.id, chapterId);
+  const result = await findContentNovel(novel.id, chapterNumber);
   if (!result) throw new Error("Data not exist");
 
   return result;
+};
+
+export const getNextChapter = async (current: string, titleId: number) => {
+  const result = await paginationChapter(current, titleId, 1);
+  if (!result || !result.chapters || result.chapters.length < 1) return false;
+  return result.chapters[0].chapter_number;
+};
+
+export const getPrevChapter = async (current: string, titleId: number) => {
+  const result = await paginationChapter(current, titleId, -1);
+  if (!result || !result.chapters || result.chapters.length < 1) return false;
+  return result.chapters[0].chapter_number;
 };

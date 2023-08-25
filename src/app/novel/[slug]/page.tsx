@@ -10,7 +10,7 @@ interface PageProps {
   };
 }
 
-export const revalidate = 300;
+// export const revalidate = 300;
 
 // export async function generateStaticParams() {
 //   const novel = await getListNovel();

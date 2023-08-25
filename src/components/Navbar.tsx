@@ -13,7 +13,9 @@ export default function Navbar() {
       className={clsx("border-b border-gray-300 bg-gray-100 text-gray-950")}
     >
       <Container>
-        <nav className={clsx("flex justify-between items-center", "h-14")}>
+        <nav
+          className={clsx("flex justify-between items-center", "h-14")}
+        >
           <Link href="/">
             <h1 className="text-2xl font-semibold">Novelin</h1>
           </Link>

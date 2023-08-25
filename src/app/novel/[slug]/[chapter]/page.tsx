@@ -1,8 +1,12 @@
 import clsx from "clsx";
-import Link from "next/link";
 import Container from "@/components/Container";
 import { notFound } from "next/navigation";
-import { getContentNovelByChapter } from "@/services/novel";
+import {
+  getContentNovelByChapter,
+  getNextChapter,
+  getPrevChapter,
+} from "@/services/novel";
+import PaginationButton from "@/components/PaginationButton";
 
 interface PageProps {
   params: {
@@ -28,9 +32,11 @@ interface PageProps {
 
 export default async function NovelChapter({ params }: PageProps) {
   const slug = params.slug;
-  const chapter = Number(params.chapter);
-  const data = await getContentNovelByChapter(slug, chapter);
+  const currentChapter = params.chapter;
+  const data = await getContentNovelByChapter(slug, currentChapter);
 
+  const nextChapter = await getNextChapter(currentChapter, data.title_id);
+  const prevChapter = await getPrevChapter(currentChapter, data.title_id);
   if (!data) return notFound();
 
   return (
@@ -43,32 +49,23 @@ export default async function NovelChapter({ params }: PageProps) {
             "flex justify-end items-center space-x-3"
           )}
         >
-          <Link
-            className={clsx(
-              "block",
-              "w-max",
-              "px-3 py-1",
-              "bg-gray-100 text-slate-950"
-            )}
-            href={`/novel/${slug}/${chapter - 1}`}
-          >
-            Prev
-          </Link>
-          <Link
-            className={clsx(
-              "block",
-              "w-max",
-              "px-3 py-1",
-              "bg-gray-100 text-slate-950"
-            )}
-            href={`/novel/${slug}/${chapter + 1}`}
-          >
-            Next
-          </Link>
+          {prevChapter ? (
+            <PaginationButton
+              text="Prev"
+              href={`/novel/${slug}/${prevChapter}`}
+            />
+          ) : null}
+
+          {nextChapter ? (
+            <PaginationButton
+              text="Next"
+              href={`/novel/${slug}/${nextChapter}`}
+            />
+          ) : null}
         </div>
 
         <div
-          className="mx-auto prose prose-invert"
+          className="mx-auto prose-lg prose-invert"
           dangerouslySetInnerHTML={{ __html: data.content }}
         ></div>
       </Container>

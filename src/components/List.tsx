@@ -1,5 +1,3 @@
-import { generateSlug } from "@/libs/generateSlug";
-import { getAllNovel } from "@/services/novel";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
