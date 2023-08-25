@@ -15,28 +15,21 @@ interface PageProps {
   };
 }
 
-// export async function generateStaticParams() {
-//   const novel = await getListNovel();
-//   if(!novel) return notFound()
-//   let newData: { slug: string; chapter: string }[] = [];
-//   for (const title of novel) {
-//     const chapters = await getAllChapter(title.id);
-//     if (!chapters) throw new Error("Error chapter");
-//     chapters.forEach((chapter) => {
-//       newData.push({ slug: title.id, chapter: chapter.chapter });
-//     });
-//   }
-//
-//   return newData;
-// }
-
 export default async function NovelChapter({ params }: PageProps) {
   const slug = params.slug;
   const currentChapter = params.chapter;
   const data = await getContentNovelByChapter(slug, currentChapter);
 
-  const nextChapter = await getNextChapter(currentChapter, data.title_id);
-  const prevChapter = await getPrevChapter(currentChapter, data.title_id);
+  const nextChapter = await getNextChapter(
+    data.id,
+    currentChapter,
+    data.title_id
+  );
+  const prevChapter = await getPrevChapter(
+    data.id,
+    currentChapter,
+    data.title_id
+  );
   if (!data) return notFound();
 
   return (

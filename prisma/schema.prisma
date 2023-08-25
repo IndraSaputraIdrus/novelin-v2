@@ -21,7 +21,7 @@ model Novel_Title {
 model Novel_Chapter {
   id  Int @id @default(autoincrement())
   title_id  Int
-  chapter_number String @unique
+  chapter_number String 
   content String
   title Novel_Title @relation(fields: [title_id], references: [id])
 }

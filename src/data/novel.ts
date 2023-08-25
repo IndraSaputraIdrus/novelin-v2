@@ -82,7 +82,7 @@ export const findContentNovel = async (
   title_id: number,
   chapterNumber: string
 ) => {
-  const result = await prisma.novel_Chapter.findUnique({
+  const result = await prisma.novel_Chapter.findFirst({
     where: {
       title_id,
       chapter_number: chapterNumber,
@@ -93,11 +93,12 @@ export const findContentNovel = async (
 };
 
 export const paginationChapter = async (
+  id: number,
   current: string,
   title_id: number,
   value: number
 ) => {
-  const result = await prisma.novel_Title.findUnique({
+  const result = await prisma.novel_Title.findFirst({
     where: {
       id: title_id,
     },
@@ -106,6 +107,8 @@ export const paginationChapter = async (
         skip: 1,
         take: value,
         cursor: {
+          id,
+          title_id,
           chapter_number: current,
         },
         select: {

@@ -52,14 +52,22 @@ export const getContentNovelByChapter = async (
   return result;
 };
 
-export const getNextChapter = async (current: string, titleId: number) => {
-  const result = await paginationChapter(current, titleId, 1);
+export const getNextChapter = async (
+  id: number,
+  current: string,
+  titleId: number
+) => {
+  const result = await paginationChapter(id, current, titleId, 1);
   if (!result || !result.chapters || result.chapters.length < 1) return false;
   return result.chapters[0].chapter_number;
 };
 
-export const getPrevChapter = async (current: string, titleId: number) => {
-  const result = await paginationChapter(current, titleId, -1);
+export const getPrevChapter = async (
+  id: number,
+  current: string,
+  titleId: number
+) => {
+  const result = await paginationChapter(id, current, titleId, -1);
   if (!result || !result.chapters || result.chapters.length < 1) return false;
   return result.chapters[0].chapter_number;
 };
