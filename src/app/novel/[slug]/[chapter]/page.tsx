@@ -1,8 +1,12 @@
 import clsx from "clsx";
-import Link from "next/link";
 import Container from "@/components/Container";
-import { getAllChapter, getData, getListNovel } from "@/libs/fetch";
 import { notFound } from "next/navigation";
+import {
+  getContentNovelByChapter,
+  getNextChapter,
+  getPrevChapter,
+} from "@/services/novel";
+import PaginationButton from "@/components/PaginationButton";
 
 interface PageProps {
   params: {
@@ -11,27 +15,22 @@ interface PageProps {
   };
 }
 
-export async function generateStaticParams() {
-  const novel = await getListNovel();
-  if(!novel) return notFound()
-  let newData: { slug: string; chapter: string }[] = [];
-  for (const title of novel) {
-    const chapters = await getAllChapter(title.id);
-    if (!chapters) throw new Error("Error chapter");
-    chapters.forEach((chapter) => {
-      newData.push({ slug: title.id, chapter: chapter.chapter });
-    });
-  }
-
-  return newData;
-}
-
 export default async function NovelChapter({ params }: PageProps) {
   const slug = params.slug;
-  const data = await getData(params.chapter, slug);
-  const chapterNumber = Number(params.chapter);
+  const currentChapter = params.chapter;
+  const data = await getContentNovelByChapter(slug, currentChapter);
 
-  if(!data) return notFound()
+  const nextChapter = await getNextChapter(
+    data.id,
+    currentChapter,
+    data.title_id
+  );
+  const prevChapter = await getPrevChapter(
+    data.id,
+    currentChapter,
+    data.title_id
+  );
+  if (!data) return notFound();
 
   return (
     <main>
@@ -43,33 +42,24 @@ export default async function NovelChapter({ params }: PageProps) {
             "flex justify-end items-center space-x-3"
           )}
         >
-          <Link
-            className={clsx(
-              "block",
-              "w-max",
-              "px-3 py-1",
-              "bg-gray-100 text-slate-950"
-            )}
-            href={`/novel/${slug}/${chapterNumber - 1}`}
-          >
-            Prev
-          </Link>
-          <Link
-            className={clsx(
-              "block",
-              "w-max",
-              "px-3 py-1",
-              "bg-gray-100 text-slate-950"
-            )}
-            href={`/novel/${slug}/${chapterNumber + 1}`}
-          >
-            Next
-          </Link>
+          {prevChapter ? (
+            <PaginationButton
+              text="Prev"
+              href={`/novel/${slug}/${prevChapter}`}
+            />
+          ) : null}
+
+          {nextChapter ? (
+            <PaginationButton
+              text="Next"
+              href={`/novel/${slug}/${nextChapter}`}
+            />
+          ) : null}
         </div>
 
         <div
-          className="mx-auto prose prose-invert"
-          dangerouslySetInnerHTML={{ __html: data.text }}
+          className="mx-auto prose-lg prose-invert"
+          dangerouslySetInnerHTML={{ __html: data.content }}
         ></div>
       </Container>
     </main>
