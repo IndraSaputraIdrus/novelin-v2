@@ -1,5 +1,5 @@
 import Container from "@/components/Container";
-import { getNovelBySlug } from "@/services/novel";
+import { getAllNovel, getNovelBySlug } from "@/services/novel";
 import clsx from "clsx";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -10,13 +10,15 @@ interface PageProps {
   };
 }
 
-// export const revalidate = 300;
+export const revalidate = 300;
 
-// export async function generateStaticParams() {
-//   const novel = await getListNovel();
-//   if (!novel) throw new Error("Data not exist")
-//   return novel.map((item) => ({ slug: item.id }));
-// }
+export async function generateStaticParams() {
+  const slug = await getAllNovel();
+  if (!slug) throw new Error("Novel not exist");
+  return slug.map((item) => ({
+    slug: item.slug,
+  }));
+}
 
 export default async function NovelPage({ params }: PageProps) {
   const data = await getNovelBySlug(params.slug);

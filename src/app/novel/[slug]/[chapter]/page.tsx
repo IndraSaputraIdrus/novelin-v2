@@ -2,8 +2,10 @@ import clsx from "clsx";
 import Container from "@/components/Container";
 import { notFound } from "next/navigation";
 import {
+  getAllNovel,
   getContentNovelByChapter,
   getNextChapter,
+  getNovelBySlug,
   getPrevChapter,
 } from "@/services/novel";
 import PaginationButton from "@/components/PaginationButton";
@@ -14,6 +16,35 @@ interface PageProps {
     slug: string;
   };
 }
+
+interface NovelDetail {
+  id: number;
+  title: string;
+  slug: string;
+  cover_img: string | null;
+  chapters: { chapter_number: number }[];
+}
+
+export async function generateStaticParams() {
+  const novels = await getAllNovel();
+
+  let result: NovelDetail[] = [];
+
+  for (const novel of novels) {
+    const novelDetail = await getNovelBySlug(novel.slug);
+    result.push(novelDetail);
+  }
+
+  const data = result.flatMap((item) => {
+    return item.chapters.map(({ chapter_number }) => ({
+      slug: item.slug,
+      chapter: chapter_number.toString(),
+    }));
+  });
+  return data;
+}
+
+export const revalidate = 300;
 
 export default async function NovelChapter({ params }: PageProps) {
   const slug = params.slug;
