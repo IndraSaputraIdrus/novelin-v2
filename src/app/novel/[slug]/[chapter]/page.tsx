@@ -17,7 +17,7 @@ interface PageProps {
 
 export default async function NovelChapter({ params }: PageProps) {
   const slug = params.slug;
-  const currentChapter = params.chapter;
+  const currentChapter = Number(params.chapter);
   const data = await getContentNovelByChapter(slug, currentChapter);
 
   const nextChapter = await getNextChapter(

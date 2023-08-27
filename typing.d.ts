@@ -8,7 +8,7 @@ type Data = {
 export type Novel = Omit<Data, "id">;
 
 export type NovelChapter = {
-  chapter_number: string;
+  chapter_number: number;
   content: string;
 };
 

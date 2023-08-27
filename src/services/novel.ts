@@ -42,7 +42,7 @@ export const getNovelBySlug = async (slug: string) => {
 
 export const getContentNovelByChapter = async (
   slug: string,
-  chapterNumber: string
+  chapterNumber: number
 ) => {
   const novel = await findIdNovelBySlug(slug);
   if (!novel) throw new Error("Data not exist");
@@ -54,7 +54,7 @@ export const getContentNovelByChapter = async (
 
 export const getNextChapter = async (
   id: number,
-  current: string,
+  current: number,
   titleId: number
 ) => {
   const result = await paginationChapter(id, current, titleId, 1);
@@ -64,7 +64,7 @@ export const getNextChapter = async (
 
 export const getPrevChapter = async (
   id: number,
-  current: string,
+  current: number,
   titleId: number
 ) => {
   const result = await paginationChapter(id, current, titleId, -1);

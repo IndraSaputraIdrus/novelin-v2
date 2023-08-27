@@ -1,6 +1,5 @@
 import prisma from "@/config/prisma";
 import { NovelChapter, Novel } from "../../typing";
-import { where } from "firebase/firestore";
 
 export const createNovelTitle = async (data: Novel) => {
   const result = await prisma.novel_Title.create({
@@ -56,7 +55,7 @@ export const findNovel = async (slug: string) => {
           chapter_number: true,
         },
         orderBy: {
-          id: "desc",
+          chapter_number: "desc",
         },
       },
     },
@@ -80,7 +79,7 @@ export const findIdNovelBySlug = async (slug: string) => {
 
 export const findContentNovel = async (
   title_id: number,
-  chapterNumber: string
+  chapterNumber: number
 ) => {
   const result = await prisma.novel_Chapter.findFirst({
     where: {
@@ -94,7 +93,7 @@ export const findContentNovel = async (
 
 export const paginationChapter = async (
   id: number,
-  current: string,
+  current: number,
   title_id: number,
   value: number
 ) => {
