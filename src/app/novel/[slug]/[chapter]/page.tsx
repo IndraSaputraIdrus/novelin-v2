@@ -18,41 +18,41 @@ interface PageProps {
   };
 }
 
-export async function generateStaticParams() {
-  const novels = await getAllNovel();
-
-  let result: NovelDetail[] = [];
-
-  for (const novel of novels) {
-    const novelDetail = await getNovelBySlug(novel.slug);
-    if (!novelDetail) continue;
-    result.push(novelDetail);
-  }
-
-  const data = result.flatMap((item) => {
-    return item.chapters.map(({ chapter_number }) => ({
-      slug: item.slug,
-      chapter: chapter_number,
-    }));
-  });
-
-  const filterData = data.sort((a, b) => {
-    if (a.slug < b.slug) {
-      return -1;
-    } else if (a.slug > b.slug) {
-      return 1;
-    } else {
-      return a.chapter - b.chapter;
-    }
-  });
-
-  const finalData = filterData.map((item) => ({
-    slug: item.slug,
-    chapter: item.chapter.toString(),
-  }));
-
-  return finalData;
-}
+// export async function generateStaticParams() {
+//   const novels = await getAllNovel();
+//
+//   let result: NovelDetail[] = [];
+//
+//   for (const novel of novels) {
+//     const novelDetail = await getNovelBySlug(novel.slug);
+//     if (!novelDetail) continue;
+//     result.push(novelDetail);
+//   }
+//
+//   const data = result.flatMap((item) => {
+//     return item.chapters.map(({ chapter_number }) => ({
+//       slug: item.slug,
+//       chapter: chapter_number,
+//     }));
+//   });
+//
+//   const filterData = data.sort((a, b) => {
+//     if (a.slug < b.slug) {
+//       return -1;
+//     } else if (a.slug > b.slug) {
+//       return 1;
+//     } else {
+//       return a.chapter - b.chapter;
+//     }
+//   });
+//
+//   const finalData = filterData.map((item) => ({
+//     slug: item.slug,
+//     chapter: item.chapter.toString(),
+//   }));
+//
+//   return finalData;
+// }
 
 export const revalidate = 300;
 
