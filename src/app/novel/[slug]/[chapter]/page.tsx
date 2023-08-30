@@ -9,20 +9,13 @@ import {
   getPrevChapter,
 } from "@/services/novel";
 import PaginationButton from "@/components/PaginationButton";
+import { NovelDetail } from "../../../../../typing";
 
 interface PageProps {
   params: {
     chapter: string;
     slug: string;
   };
-}
-
-interface NovelDetail {
-  id: number;
-  title: string;
-  slug: string;
-  cover_img: string | null;
-  chapters: { chapter_number: number }[];
 }
 
 export async function generateStaticParams() {
