@@ -32,6 +32,7 @@ export async function generateStaticParams() {
 
   for (const novel of novels) {
     const novelDetail = await getNovelBySlug(novel.slug);
+    if (!novelDetail) continue;
     result.push(novelDetail);
   }
 
