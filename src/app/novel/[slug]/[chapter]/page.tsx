@@ -38,10 +38,26 @@ export async function generateStaticParams() {
   const data = result.flatMap((item) => {
     return item.chapters.map(({ chapter_number }) => ({
       slug: item.slug,
-      chapter: chapter_number.toString(),
+      chapter: chapter_number,
     }));
   });
-  return data;
+
+  const filterData = data.sort((a, b) => {
+    if (a.slug < b.slug) {
+      return -1;
+    } else if (a.slug > b.slug) {
+      return 1;
+    } else {
+      return a.chapter - b.chapter;
+    }
+  });
+
+  const finalData = filterData.map((item) => ({
+    slug: item.slug,
+    chapter: item.chapter.toString(),
+  }));
+
+  return finalData;
 }
 
 export const revalidate = 300;
@@ -50,6 +66,8 @@ export default async function NovelChapter({ params }: PageProps) {
   const slug = params.slug;
   const currentChapter = Number(params.chapter);
   const data = await getContentNovelByChapter(slug, currentChapter);
+
+  if (!data) return notFound();
 
   const nextChapter = await getNextChapter(
     data.id,
@@ -61,7 +79,6 @@ export default async function NovelChapter({ params }: PageProps) {
     currentChapter,
     data.title_id
   );
-  if (!data) return notFound();
 
   return (
     <main>

@@ -35,7 +35,8 @@ export const getAllNovel = async () => {
 
 export const getNovelBySlug = async (slug: string) => {
   const result = await findNovel(slug);
-  if (!result) throw new Error("Data not exist");
+  // if (!result) throw new Error("Data not exist");
+  if (!result) return undefined;
 
   return result;
 };
@@ -45,9 +46,11 @@ export const getContentNovelByChapter = async (
   chapterNumber: number
 ) => {
   const novel = await findIdNovelBySlug(slug);
-  if (!novel) throw new Error("Data not exist");
+  // if (!novel) throw new Error("Data not exist");
+  if (!novel) return undefined;
   const result = await findContentNovel(novel.id, chapterNumber);
-  if (!result) throw new Error("Data not exist");
+  // if (!result) throw new Error("Data not exist");
+  if (!result) return undefined;
 
   return result;
 };
