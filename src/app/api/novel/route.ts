@@ -48,7 +48,7 @@ export const POST = async (req: Request) => {
     if (!data) throw new Error("Novel not exist");
 
     return NextResponse.json({
-      data,
+      data: [data]
     });
   } catch (error: any) {
     return NextResponse.json({
