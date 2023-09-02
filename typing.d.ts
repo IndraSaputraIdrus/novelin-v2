@@ -17,3 +17,11 @@ export type UploadImages = {
   file: File;
   contentType: string;
 };
+
+export type NovelDetail = {
+  id: number;
+  title: string;
+  slug: string;
+  cover_img: string | null;
+  chapters: { chapter_number: number }[];
+};
