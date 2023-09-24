@@ -1,4 +1,4 @@
-import Navbar from "@/components/Navbar";
+import Navbar from "@/app/components/Navbar";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Lato } from "next/font/google";
@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning={true}>
       <body className={lato.className}>
         <Navbar />
         {children}

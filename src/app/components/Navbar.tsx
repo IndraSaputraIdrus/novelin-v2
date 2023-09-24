@@ -1,13 +1,28 @@
+"use client"
+
 import clsx from "clsx";
 import Link from "next/link";
 import Container from "./Container";
+import { useNavbarStore } from "@/stores/navbar-store";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 const navLinks = [
   { id: 1, name: "Home", url: "/" },
   { id: 2, name: "About", url: "/about" },
 ];
 
+
 export default function Navbar() {
+
+  const [active, setActive] = useNavbarStore(state => [state.active, state.setActive])
+
+  const path = usePathname()
+
+  useEffect(() => {
+    setActive(path)
+  }, [path])
+  
   return (
     <header
       className={clsx("border-b border-gray-300 bg-gray-100 text-gray-950")}
@@ -24,7 +39,12 @@ export default function Navbar() {
               <li key={link.id}>
                 <Link
                   href={link.url}
-                  className="text-gray-700 hover:text-gray-950"
+                  className={clsx(
+                    active === link.url
+                      ? "text-gray-960 font-semibold"
+                      : "text-gray-700",
+                    "hover:opacity-70",
+                  )}
                 >
                   {link.name}
                 </Link>

@@ -2,22 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* :root { */
-/*   --foreground-rgb: 255, 255, 255; */
-/*   --background-start-rgb: 0, 0, 0; */
-/*   --background-end-rgb: 0, 0, 0; */
-/* } */
-/*  */
-/* body { */
-/* color: rgb(var(--foreground-rgb)); */
-/* background: linear-gradient( */
-/*     to bottom, */
-/*     transparent, */
-/*     rgb(var(--background-end-rgb)) */
-/*   ) */
-/*   rgb(var(--background-start-rgb)); */
-/* } */
-
 body {
   @apply bg-gray-950 text-gray-100;
+}
+
+.custom-shadow {
+  @apply shadow-[3px_3px_0px_1px_theme(colors.gray.100)];
+}
+
+.text-1 {
+  text-wrap: balance;
 }

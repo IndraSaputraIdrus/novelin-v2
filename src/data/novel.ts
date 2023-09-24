@@ -1,5 +1,5 @@
 import prisma from "@/config/prisma";
-import { NovelChapter, Novel } from "../../typing";
+import { Novel, NovelChapter } from "../../typing";
 
 export const createNovelTitle = async (data: Novel) => {
   const result = await prisma.novel_Title.create({
@@ -10,7 +10,11 @@ export const createNovelTitle = async (data: Novel) => {
 };
 
 export const findManyNovel = async () => {
-  const result = await prisma.novel_Title.findMany();
+  const result = await prisma.novel_Title.findMany({
+    orderBy: {
+      id: "desc",
+    },
+  });
   return result;
 };
 
@@ -79,7 +83,7 @@ export const findIdNovelBySlug = async (slug: string) => {
 
 export const findContentNovel = async (
   title_id: number,
-  chapterNumber: number
+  chapterNumber: number,
 ) => {
   const result = await prisma.novel_Chapter.findFirst({
     where: {
@@ -95,7 +99,7 @@ export const paginationChapter = async (
   id: number,
   current: number,
   title_id: number,
-  value: number
+  value: number,
 ) => {
   const result = await prisma.novel_Title.findFirst({
     where: {
@@ -103,6 +107,9 @@ export const paginationChapter = async (
     },
     select: {
       chapters: {
+        orderBy: {
+          chapter_number: "asc",
+        },
         skip: 1,
         take: value,
         cursor: {
@@ -117,5 +124,5 @@ export const paginationChapter = async (
     },
   });
 
-  return result;
+  return result
 };

@@ -1,15 +1,14 @@
 import clsx from "clsx";
-import Container from "@/components/Container";
+import Container from "@/app/components/Container";
 import { notFound } from "next/navigation";
 import {
-  getAllNovel,
   getContentNovelByChapter,
   getNextChapter,
   getNovelBySlug,
   getPrevChapter,
 } from "@/services/novel";
-import PaginationButton from "@/components/PaginationButton";
-import { NovelDetail } from "../../../../../typing";
+import PaginationButton from "@/app/components/PaginationButton";
+import { Metadata } from "next";
 
 interface PageProps {
   params: {
@@ -18,43 +17,23 @@ interface PageProps {
   };
 }
 
-// export async function generateStaticParams() {
-//   const novels = await getAllNovel();
-//
-//   let result: NovelDetail[] = [];
-//
-//   for (const novel of novels) {
-//     const novelDetail = await getNovelBySlug(novel.slug);
-//     if (!novelDetail) continue;
-//     result.push(novelDetail);
-//   }
-//
-//   const data = result.flatMap((item) => {
-//     return item.chapters.map(({ chapter_number }) => ({
-//       slug: item.slug,
-//       chapter: chapter_number,
-//     }));
-//   });
-//
-//   const filterData = data.sort((a, b) => {
-//     if (a.slug < b.slug) {
-//       return -1;
-//     } else if (a.slug > b.slug) {
-//       return 1;
-//     } else {
-//       return a.chapter - b.chapter;
-//     }
-//   });
-//
-//   const finalData = filterData.map((item) => ({
-//     slug: item.slug,
-//     chapter: item.chapter.toString(),
-//   }));
-//
-//   return finalData;
-// }
-
 export const revalidate = 300;
+
+export async function generateMetadata(
+  { params }: PageProps,
+): Promise<Metadata> {
+  const { slug, chapter } = params;
+  const data = await getNovelBySlug(slug);
+  if (!data) {
+    return {
+      title: "Page not found",
+    };
+  }
+
+  return {
+    title: `${data.title} | Chapter ${chapter}`,
+  };
+}
 
 export default async function NovelChapter({ params }: PageProps) {
   const slug = params.slug;
@@ -66,43 +45,56 @@ export default async function NovelChapter({ params }: PageProps) {
   const nextChapter = await getNextChapter(
     data.id,
     currentChapter,
-    data.title_id
+    data.title_id,
   );
   const prevChapter = await getPrevChapter(
     data.id,
     currentChapter,
-    data.title_id
+    data.title_id,
   );
 
-  return (
-    <main>
-      <Container className="my-20">
-        <div
-          className={clsx(
-            "max-w-2xl",
-            "mx-auto mb-10",
-            "flex justify-end items-center space-x-3"
-          )}
-        >
-          {prevChapter ? (
+  const Pagination = ({ className }: { className?: string }) => {
+    return (
+      <div
+        className={clsx(
+          "max-w-2xl",
+          "mx-auto",
+          "flex justify-end items-center space-x-3",
+          className ? className : null,
+        )}
+      >
+        {prevChapter
+          ? (
             <PaginationButton
               text="Prev"
               href={`/novel/${slug}/${prevChapter}`}
             />
-          ) : null}
+          )
+          : null}
 
-          {nextChapter ? (
+        {nextChapter
+          ? (
             <PaginationButton
               text="Next"
               href={`/novel/${slug}/${nextChapter}`}
             />
-          ) : null}
-        </div>
+          )
+          : null}
+      </div>
+    );
+  };
+
+  return (
+    <main>
+      <Container className="my-20">
+        <Pagination className="mb-12" />
 
         <div
           className="mx-auto prose-lg prose-invert"
           dangerouslySetInnerHTML={{ __html: data.content }}
-        ></div>
+        />
+
+        <Pagination className="mt-12"/>
       </Container>
     </main>
   );

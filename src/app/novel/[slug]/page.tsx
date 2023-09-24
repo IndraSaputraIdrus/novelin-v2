@@ -1,6 +1,7 @@
-import Container from "@/components/Container";
+import Container from "@/app/components/Container";
 import { getAllNovel, getNovelBySlug } from "@/services/novel";
 import clsx from "clsx";
+import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -11,6 +12,23 @@ interface PageProps {
 }
 
 export const revalidate = 300;
+
+export async function generateMetadata(
+  { params }: PageProps,
+): Promise<Metadata> {
+  const { slug } = params;
+
+  const data = await getNovelBySlug(slug);
+
+  if (!data) {
+    return {
+      title: "Page not found",
+    };
+  }
+  return {
+    title: `Novelin | ${data.title}`,
+  };
+}
 
 export async function generateStaticParams() {
   const slug = await getAllNovel();
@@ -37,7 +55,7 @@ export default async function NovelPage({ params }: PageProps) {
                     "block",
                     "rounded",
                     "px-3 py-1.5",
-                    "bg-gray-900 hover:opacity-80"
+                    "bg-gray-900 hover:opacity-80",
                   )}
                   href={`/novel/${params.slug}/${chapter_number}`}
                 >
