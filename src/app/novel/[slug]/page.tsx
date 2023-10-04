@@ -1,5 +1,6 @@
 import Container from "@/components/Container";
 import LatestRead from "@/components/LatestRead";
+import SearchInput from "@/components/SearchInput";
 import { getAllNovel, getNovelBySlug } from "@/services/novel";
 import clsx from "clsx";
 import { Metadata } from "next";
@@ -48,7 +49,8 @@ export default async function NovelPage({ params }: PageProps) {
       <Container className="my-20">
         <h1 className="capitalize text-3xl font-semibold">{data.title}</h1>
         <div>
-          <LatestRead slug={params.slug} chapterNumber={15} />
+            <LatestRead slug={params.slug} chapterNumber={15} />
+          <SearchInput />
           <ul className="mt-5 h-80 overflow-y-auto space-y-1.5">
             {data.chapters.map(({ chapter_number }) => (
               <li key={Number(chapter_number)}>

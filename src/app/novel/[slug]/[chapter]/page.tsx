@@ -9,7 +9,7 @@ import {
 } from "@/services/novel";
 import PaginationButton from "@/components/PaginationButton";
 import { Metadata } from "next";
-import SetHistory from "@/components/setHistory";
+import SetHistory from "@/components/SetHistory";
 
 interface PageProps {
   params: {
