@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import Container from "@/app/components/Container";
+import Container from "@/components/Container";
 import { notFound } from "next/navigation";
 import {
   getContentNovelByChapter,
@@ -7,8 +7,9 @@ import {
   getNovelBySlug,
   getPrevChapter,
 } from "@/services/novel";
-import PaginationButton from "@/app/components/PaginationButton";
+import PaginationButton from "@/components/PaginationButton";
 import { Metadata } from "next";
+import SetHistory from "@/components/setHistory";
 
 interface PageProps {
   params: {
@@ -96,6 +97,7 @@ export default async function NovelChapter({ params }: PageProps) {
 
         <Pagination className="mt-12"/>
       </Container>
+      <SetHistory slug={params.slug} chapter={Number(params.chapter)} />
     </main>
   );
 }

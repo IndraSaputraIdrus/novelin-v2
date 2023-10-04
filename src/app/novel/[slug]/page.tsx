@@ -1,4 +1,5 @@
-import Container from "@/app/components/Container";
+import Container from "@/components/Container";
+import LatestRead from "@/components/LatestRead";
 import { getAllNovel, getNovelBySlug } from "@/services/novel";
 import clsx from "clsx";
 import { Metadata } from "next";
@@ -47,6 +48,7 @@ export default async function NovelPage({ params }: PageProps) {
       <Container className="my-20">
         <h1 className="capitalize text-3xl font-semibold">{data.title}</h1>
         <div>
+          <LatestRead slug={params.slug} chapterNumber={15} />
           <ul className="mt-5 h-80 overflow-y-auto space-y-1.5">
             {data.chapters.map(({ chapter_number }) => (
               <li key={Number(chapter_number)}>
@@ -57,7 +59,7 @@ export default async function NovelPage({ params }: PageProps) {
                     "px-3 py-1.5",
                     "bg-gray-900 hover:opacity-80",
                   )}
-                  href={`/novel/${params.slug}/${chapter_number}`}
+                  href={`${params.slug}/${chapter_number}`}
                 >
                   Chapter - {chapter_number}
                 </Link>

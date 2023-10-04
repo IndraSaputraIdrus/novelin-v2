@@ -1,5 +1,5 @@
-import Container from "@/app/components/Container";
-import List from "@/app/components/List";
+import Container from "@/components/Container";
+import List from "@/components/List";
 import { getAllNovel } from "@/services/novel";
 
 export const revalidate = 300
